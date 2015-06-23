@@ -1,0 +1,6 @@
+[submodule "cereal"]
+	path = cereal
+	url = https://github.com/USCiLab/cereal.git
+[submodule "googletest_lib"]
+	path = googletest_lib
+	url = https://github.com/syxolk/googletest_lib.git
