@@ -3,13 +3,13 @@
 
 class OtherBase {
 public:
-    OtherBase(int otherBaseVal);
+    OtherBase(int otherBaseVal = 0);
     virtual ~OtherBase();
 
     int otherBaseVal;
 
     template<class Archive>
-    void serialize(Archive ar) {
+    void serialize(Archive &ar) {
         ar(otherBaseVal);
     }
 };

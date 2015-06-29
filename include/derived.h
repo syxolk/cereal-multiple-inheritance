@@ -16,7 +16,7 @@ public:
     int derivedVal;
 
     template<class Archive>
-    void serialize(Archive ar) {
+    void serialize(Archive &ar) {
         ar(cereal::base_class<Base>(this), cereal::base_class<OtherBase>(this),
            derivedVal);
     }
