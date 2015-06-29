@@ -3,6 +3,7 @@
 #include "other_base.h"
 #include "derived.h"
 #include <memory>
+#include <type_traits>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/polymorphic.hpp>
 
@@ -14,10 +15,22 @@ template<typename T>
 using input_serializers = cereal::traits::detail::count_input_serializers<T,
     cereal::PortableBinaryInputArchive>;
 
-TEST(Serialization, Base) {
-    ASSERT_EQ(output_serializers<Base>::value, 1);
-    ASSERT_EQ(output_serializers<Derived>::value, 1);
+TEST(Serialization, Preconditions) {
+    ASSERT_EQ(1, output_serializers<Base>::value);
+    ASSERT_EQ(1, output_serializers<Derived>::value);
+    ASSERT_EQ(1, output_serializers<OtherBase>::value);
 
+    ASSERT_TRUE(std::is_polymorphic<Base>::value);
+    ASSERT_TRUE(std::is_polymorphic<OtherBase>::value);
+    ASSERT_TRUE(std::is_polymorphic<Derived>::value);
+
+    constexpr bool baseOfBase = std::is_base_of<Base,Derived>::value;
+    constexpr bool baseOfOtherBase = std::is_base_of<OtherBase,Derived>::value;
+    ASSERT_TRUE(baseOfBase);
+    ASSERT_TRUE(baseOfOtherBase);
+}
+
+TEST(Serialization, Base) {
     std::stringstream ss;
     {
         cereal::PortableBinaryOutputArchive oarchive(ss);
@@ -42,9 +55,6 @@ TEST(Serialization, Base) {
 }
 
 TEST(Serialization, OtherBase) {
-    ASSERT_EQ(output_serializers<OtherBase>::value, 1);
-    ASSERT_EQ(output_serializers<Derived>::value, 1);
-
     std::stringstream ss;
     {
         cereal::PortableBinaryOutputArchive oarchive(ss);
